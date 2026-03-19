@@ -3,7 +3,7 @@ library(readxl)
 library(jsonlite)
 
 # salaries by ORR, emails and phone numbers removed
-salary_file <- "../salary_data/Updated 2025-09 All Faculty and Staff Title and Salary Information.xlsx"
+salary_file <- "../salary_data/Updated 2026-03 All Faculty and Staff Title and Salary Information.xlsx"
 # TTC info from https://github.com/vgXhc/TTC
 salary_range_file <- "salary_ranges_jan_2024.csv"
 
