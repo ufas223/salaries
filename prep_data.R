@@ -3,20 +3,26 @@ library(readxl)
 library(jsonlite)
 
 # salaries by ORR, emails and phone numbers removed
-salary_file <- "../salary_data/Updated 2026-03 All Faculty and Staff Title and Salary Information.xlsx"
-# TTC info from https://github.com/vgXhc/TTC
-salary_range_file <- "salary_ranges_jan_2024.csv"
+salary_file <- "../../WUU/UWsalaries/salary_data/Updated 2026-09 All Faculty and Staff Title and Salary Information.xlsx"
 
 x <- readxl::read_excel(salary_file)
 x <- as.data.frame(x)
 
+# fix column names
+n <- names(x)
+n[n=="Annualized_Rate_Amount"] <- "Annual_Full_Salary"
+n[n=="Job_Code"] <- "Jobcode"
+names(x) <- n
+
 # remove $0 cases and FTE > 0.01
-x <- x[x$"Annual_Full_Salary">1000 & x$"Full_Time_Equivalent" > 0.01,]
+x <- x[x$"Annual_Full_Salary">1000 & x$"FTE" > 0.01,]
+
 
 # reduce columns
 x <- x[,c("First_Name", "Last_Name", "Division", "Department", "Title", "Salary_Grade",
           "Annual_Full_Salary", "Jobcode")]
 colnames(x) <- c("FirstName", "LastName", "Division", "Department", "Title", "SalaryGrade", "AnnualSalary", "JobCode")
+
 
 # convert names to upper case
 x$FirstName <- toupper(x$FirstName)
@@ -62,16 +68,3 @@ x <- x[, colnames(x) != "Title"]
 # convert to JSON
 y <- jsonlite::toJSON(x)
 cat(y, file="salaries.json")
-
-######################################################################
-# salary ranges
-salary_ranges <- read.csv(salary_range_file)
-salary_ranges$salary_grade <- sprintf("%03d", salary_ranges$salary_grade)
-
-v <- vector("list", nrow(salary_ranges))
-names(v) <- salary_ranges[,1]
-for(i in seq_along(v)) {
-    v[[i]] <- list(min=salary_ranges[i,2], max=salary_ranges[i,3])
-}
-
-cat(toJSON(v, auto_unbox=TRUE), file="salary_ranges.json")

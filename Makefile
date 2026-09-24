@@ -3,7 +3,7 @@ R_OPTS=--no-save --no-restore --no-init-file --no-site-file
 
 all: salaries.json script.js salary_ranges.json
 
-salaries.json: prep_data.R ../../WUU/UWsalaries/salary_data/Updated\ 2025-09\ All\ Faculty\ and\ Staff\ Title\ and\ Salary\ Information.xlsx
+salaries.json: prep_data.R ../../WUU/UWsalaries/salary_data/Updated\ 2026-09\ All\ Faculty\ and\ Staff\ Title\ and\ Salary\ Information.xlsx
 	R CMD BATCH $(R_OPTS) $<
 
 script.js: script.coffee
@@ -11,3 +11,6 @@ script.js: script.coffee
 
 salary_ranges.json: convert_ranges.R salary_ranges.csv
 	R CMD BATCH $(R_OPTS) $<
+
+salary_ranges.csv: ../../WUU/UWsalaries/salary_ranges/salary_ranges.csv
+	cp $< .
